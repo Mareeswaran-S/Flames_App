@@ -16,6 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
@@ -28,9 +30,10 @@ import java.lang.Exception
 
 class ResultActivity : AppCompatActivity() {
 
-    lateinit var textView: TextView
-    lateinit var textView1: TextView
-    lateinit var image: ImageView
+    lateinit var textView: AppCompatTextView
+    lateinit var textView1: AppCompatTextView
+    lateinit var bondperc: AppCompatTextView
+    lateinit var image: AppCompatImageView
     lateinit var constraintLayout: ConstraintLayout
     lateinit var chipShare: Chip
     private var rand = 0
@@ -38,6 +41,7 @@ class ResultActivity : AppCompatActivity() {
     private var girlName: String? = null
     private var boyName: String? = null
     private var result: String?=null
+    private var perc : String?=null
 
     var friends = arrayOf("%s has found a new friend and her name is %s", "%s & %s are good friends", "%s & %s are going to be friends")
     var love = arrayOf("%s and %s have found love of their life", "%s & %s are going to be true lovers", "%s & %s are going to be cute couples")
@@ -51,34 +55,38 @@ class ResultActivity : AppCompatActivity() {
         setContentView(R.layout.activity_result)
         boyName = intent!!.getStringExtra("boyName")
         girlName = intent!!.getStringExtra("girlName")
+        perc = intent.getStringExtra("percentage")
         result = intent!!.getStringExtra("result")
         textView = findViewById(R.id.title)
         textView1 = findViewById(R.id.subtitle)
+        bondperc = findViewById(R.id.percentage)
         chipShare = findViewById(R.id.chipShare)
         image = findViewById(R.id.image)
         constraintLayout = findViewById(R.id.main)
+//        bondperc.text = perc.toString()
+//        bondperc.text = boyName + "&" +girlName + "You Both are" + perc.toString() + " Compatible..💕"
 
         chipShare.setOnClickListener {
             performShare()
         }
 
-
         val r = java.util.Random()
         rand = r.nextInt(3)
+
         when (result) {
             "F" -> {
-                textView1.text = String.format(friends[rand], boyName, girlName)
+                textView1.text = String.format(friends[rand], boyName, girlName, perc)
                 image.setImageDrawable(resources.getDrawable(R.mipmap.friend))
                 constraintLayout.setBackgroundColor(Color.parseColor("#FFFFFF"))
             }
             "l" -> {
-                textView1.text = String.format(love[rand], boyName, girlName)
+                textView1.text = String.format(love[rand], boyName, girlName, perc)
                 image.setImageDrawable(resources.getDrawable(R.mipmap.love))
                 constraintLayout.setBackgroundColor(Color.parseColor("#FFFFFF"))
             }
             "a" -> {
                 try {
-                    textView1.text = String.format(affection[rand], boyName, girlName)
+                    textView1.text = String.format(affection[rand], boyName, girlName, perc)
                 } catch (e: Exception) {
                     textView1.text = affection[rand]
                 }
@@ -86,13 +94,13 @@ class ResultActivity : AppCompatActivity() {
                 constraintLayout.setBackgroundColor(Color.parseColor("#F9D7D8"))
             }
             "m" -> {
-                textView1.text = String.format(marriage[rand], boyName, girlName)
+                textView1.text = String.format(marriage[rand], boyName, girlName, perc)
                 image.setImageDrawable(resources.getDrawable(R.mipmap.marriage))
                 constraintLayout.setBackgroundColor(Color.parseColor("#F4C4B6"))
             }
             "e" -> {
                 try {
-                    textView1.text = String.format(enemy[rand], boyName, girlName)
+                    textView1.text = String.format(enemy[rand], boyName, girlName, perc)
                 } catch (e: Exception) {
                     textView1.text = enemy[rand]
                 }
@@ -100,7 +108,7 @@ class ResultActivity : AppCompatActivity() {
                 constraintLayout.setBackgroundColor(Color.parseColor("#FFFFFF"))
             }
             "s" -> {
-                textView1.text = String.format(sister[rand], boyName, girlName)
+                textView1.text = String.format(sister[rand], boyName, girlName, perc)
                 image.setImageDrawable(resources.getDrawable(R.mipmap.sister))
                 constraintLayout.setBackgroundColor(Color.parseColor("#FECE02"))
             }
@@ -134,12 +142,12 @@ class ResultActivity : AppCompatActivity() {
         when (result) {
             "F" -> {
                 flames.text = Html.fromHtml("<font color=\"#FF5252\">F</font>lames")
-                output.text = String.format(friends[rand], boyName, girlName)
+                output.text = String.format(friends[rand], boyName, girlName, perc)
                 imageView.setImageDrawable(resources.getDrawable(R.mipmap.friend))
                 cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
             }
             "l" -> {
-                output.text = String.format(love[rand], boyName, girlName)
+                output.text = String.format(love[rand], boyName, girlName, perc)
                 flames.text = Html.fromHtml("F<font color=\"#FF5252\">l</font>ames")
                 imageView.setImageDrawable(resources.getDrawable(R.mipmap.love))
                 cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
@@ -147,7 +155,7 @@ class ResultActivity : AppCompatActivity() {
             "a" -> {
                 flames.text = Html.fromHtml("Fl<font color=\"#FF5252\">a</font>mes")
                 try {
-                    output.text = String.format(affection[rand], boyName, girlName)
+                    output.text = String.format(affection[rand], boyName, girlName, perc)
                 } catch (e: Exception) {
                     output.text = affection[rand]
                 }
@@ -156,14 +164,14 @@ class ResultActivity : AppCompatActivity() {
             }
             "m" -> {
                 flames.text = Html.fromHtml("Fla<font color=\"#FF5252\">m</font>es")
-                output.text = String.format(marriage[rand], boyName, girlName)
+                output.text = String.format(marriage[rand], boyName, girlName, perc)
                 imageView.setImageDrawable(resources.getDrawable(R.mipmap.marriage))
                 cardView.setCardBackgroundColor(Color.parseColor("#F4C4B6"))
             }
             "e" -> {
                 flames.text = Html.fromHtml("Flam<font color=\"#FF5252\">e</font>s")
                 try {
-                    output.text = String.format(enemy[rand], boyName, girlName)
+                    output.text = String.format(enemy[rand], boyName, girlName, perc)
                 } catch (e: Exception) {
                     output.text = enemy[rand]
                 }
@@ -171,7 +179,7 @@ class ResultActivity : AppCompatActivity() {
                 cardView.setCardBackgroundColor(Color.parseColor("#FFFFFF"))
             }
             "s" -> {
-                output.text = String.format(sister[rand], boyName, girlName)
+                output.text = String.format(sister[rand], boyName, girlName, perc)
                 flames.text = Html.fromHtml("Flame<font color=\"#FF5252\">s</font>")
                 imageView.setImageDrawable(resources.getDrawable(R.mipmap.sister))
                 cardView.setCardBackgroundColor(Color.parseColor("#FECE02"))

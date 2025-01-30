@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "875308434663",
+    "firebase_url": "https://flames-e781a-default-rtdb.firebaseio.com",
+    "project_id": "flames-e781a",
+    "storage_bucket": "flames-e781a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875308434663:android:efeb439349e66e7134ce42",
+        "android_client_info": {
+          "package_name": "com.mareeswaran.flames"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF02cMsZ3I3WYjzIAmmBjkErxmAMNh8go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

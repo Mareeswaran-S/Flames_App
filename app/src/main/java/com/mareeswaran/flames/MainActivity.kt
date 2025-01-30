@@ -14,15 +14,25 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.app.ActivityOptionsCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.database.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    var input1: TextInputEditText? = null
-    var input2: TextInputEditText? = null
+    lateinit var input1: TextInputEditText
+    lateinit var input2: TextInputEditText
     lateinit var name1: CharArray
     lateinit var name2: CharArray
     var output: MutableList<Char> = ArrayList()
+
+    var sum: Int = 0;
+    var sum1: Int = 0;
+    lateinit var bonding : String
+
+    private lateinit var firebaseDatabase: FirebaseDatabase
+    private lateinit var databaseReference: DatabaseReference
+    private lateinit var nameinfo: Nameinfo
+    private var list = mutableListOf<Nameinfo>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +41,25 @@ class MainActivity : AppCompatActivity() {
 
         input1 = findViewById(R.id.input1)
         input2 = findViewById(R.id.input2)
+
+        firebaseDatabase = FirebaseDatabase.getInstance()
+
+        databaseReference = firebaseDatabase.getReference("Couples-Info")
+//        databaseReference = firebaseDatabase.getReference("CouplesData")
+        databaseReference = firebaseDatabase.reference
+        nameinfo = Nameinfo()
+
+    }
+
+
+    private fun sumOfDigits(num: Int): Int {
+        var sum = 0
+        var number = num
+        while (number > 0) {
+            sum += (number % 10)
+            number /= 10
+        }
+        return sum
     }
 
     fun onMatchClicked(view: View?) {
@@ -38,6 +67,21 @@ class MainActivity : AppCompatActivity() {
 
         val boyName = input1!!.text.toString()
         val girlName = input2!!.text.toString()
+
+        sum = 0
+        for (i in 0 until boyName.length) {
+            sum += boyName[i].toLowerCase().toInt()
+        }
+        sum1 = 0
+        for (i in 0 until girlName.length) {
+            sum1 += girlName[i].toLowerCase().toInt()
+        }
+        var perc = ((sumOfDigits(sum) + sumOfDigits(sum1)) + 40).toFloat()
+        if (perc > 100)
+            perc = 100f
+        bonding = perc.toString()
+
+        Log.d("Love_Percentage: ",bonding)
 
         if (TextUtils.isEmpty(boyName.replace(" ", "")) || TextUtils.isEmpty(girlName.replace(" ", ""))) {
             Snackbar.make(findViewById(R.id.main), "All fields are required", Snackbar.LENGTH_SHORT).show()
@@ -47,6 +91,8 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(findViewById(R.id.main), "Are you sure with the names you have entered?", Snackbar.LENGTH_SHORT).show()
             return
         }
+
+        //sample
         name1 = boyName.toLowerCase().toCharArray()
         name2 = girlName.toLowerCase().toCharArray()
 
@@ -87,14 +133,45 @@ class MainActivity : AppCompatActivity() {
             }
             relationIs = baseInput[0]
             Log.i("OUTPUT", relationIs.toString())
+            addDatatoFirebase(boyName, girlName, relationIs.toString())
+
         }
+
         val intent = Intent(applicationContext, ResultActivity::class.java)
         intent.putExtra("boyName", boyName)
         intent.putExtra("girlName",girlName)
+        intent.putExtra("percentage",bonding)
         intent.putExtra("result", relationIs.toString())
         val optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(this, findViewById(R.id.title), "title")
         input1?.setText("")
         input2?.setText("")
         startActivity(intent, optionsCompat.toBundle())
     }
+
+
+    private fun addDatatoFirebase(name: String, gname: String, outres: String) {
+
+        val sanitizedBoyName = name.replace(" ", "").toLowerCase()
+        val sanitizedGirlName = gname.replace(" ", "").toLowerCase()
+
+        val uniqueKey = "${sanitizedBoyName}-$sanitizedGirlName"
+
+        nameinfo.inboyName = name
+        nameinfo.ingirlName = gname
+        nameinfo.outResult = outres
+
+        val newEntryRef = databaseReference.child(uniqueKey)
+
+        newEntryRef.setValue(nameinfo)
+            .addOnCanceledListener {
+                Log.d("Firebase", "Data added successfully")
+                Toast.makeText(this@MainActivity, "Data added successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { error ->
+                // Handle failure
+                Log.e("Firebase", "Failed to add data: ${error.message}")
+                Toast.makeText(this@MainActivity, "Failed to add data: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 }
