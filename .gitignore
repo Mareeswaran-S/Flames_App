@@ -1,15 +1,27 @@
+# Ignore Gradle files
+.gradle/
+build/
+
+# Ignore Android Studio files
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+
+# Ignore local configuration files
 local.properties
+
+# Ignore logs
+*.log
+
+# Ignore keystore files (for signing the APK)
+*.keystore
+*.jks
+
+# Ignore Android-specific files
+captures/
+
+# Ignore other OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore gradle wrapper files if you don't want them tracked (optional)
+gradle/wrapper/gradle-wrapper.properties
