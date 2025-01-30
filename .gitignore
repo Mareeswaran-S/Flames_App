@@ -1,3 +1,6 @@
+#Ignore .kt functionalities
+*.kt
+
 # Ignore Gradle files
 .gradle/
 build/
